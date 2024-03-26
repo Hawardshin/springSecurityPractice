@@ -1,11 +1,23 @@
 package com.cos.security1.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cos.security1.model.User;
+import com.cos.security1.repository.UserRepository;
 
 @Controller //viwe 를 리턴하겠다.
 public class IndexController {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@GetMapping({"","/"})
 	public String index(){
@@ -29,18 +41,26 @@ public class IndexController {
 		return "manager";
 	}
 
-	@GetMapping("/login") //스프링 시큐리티가 해당 주소를 낚아챔. SecurityConfig 파일 생성 후 작동안함.
-	public @ResponseBody String login() {
-		return "login";
+	@GetMapping("/loginForm") //스프링 시큐리티가 해당 주소를 낚아챔. SecurityConfig 파일 생성 후 작동안함.
+	public  String loginForm() {
+		return "loginForm";
 	}
 
-	@GetMapping("/join")
-	public @ResponseBody String join() {
-		return "join";
+	@GetMapping("/joinForm")
+	public String joinForm() {
+		return "joinForm";
 	}
 
-	@GetMapping("/joinProc")
-	public @ResponseBody String  joinProc() {
-		return "회원가입 완료됨!";
+	@PostMapping("/join")
+	public String join(User user) {
+		System.out.println("user = " + user);
+		user.setRole("ROLE_USER");
+		String rawPassword = user.getPassword();
+		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+		user.setPassword(encPassword);
+
+		userRepository.save(user);//회원가입 잘 됨 (비밀번호  1234로 들어가는데 이렇게 하면 시큐리티 로그인 불가. 해쉬암호화 해야함)
+		return "redirect:/loginForm";
 	}
+
 }
