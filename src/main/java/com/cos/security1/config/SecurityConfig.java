@@ -29,8 +29,10 @@ public class SecurityConfig {
 				.anyRequest().permitAll() //위의 주소를 제외한 나머지 주소는 누구나 들어갈 수 있다.
 		);
 		http.formLogin(login ->{
-			login.loginPage("/loginForm"); // 로그인 페이지를 따로 만들지 않았기 때문에 스프링 시큐리티가 제공하는 로그인 페이지로 이동
-			// login.permitAll();
+			login
+				.loginPage("/loginForm")
+				.loginProcessingUrl("/login") //login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행해 준다.(컨트롤러에 /login을 만들지 않아도 된다.)
+				.defaultSuccessUrl("/");
 			}
 		);
 
