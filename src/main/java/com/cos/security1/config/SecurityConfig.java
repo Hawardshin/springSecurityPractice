@@ -5,11 +5,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록이 된다.
 public class SecurityConfig {
+
+	//해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
+	@Bean
+	public BCryptPasswordEncoder encodePwd(){
+		return new BCryptPasswordEncoder();
+	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -22,7 +29,7 @@ public class SecurityConfig {
 				.anyRequest().permitAll() //위의 주소를 제외한 나머지 주소는 누구나 들어갈 수 있다.
 		);
 		http.formLogin(login ->{
-			login.loginPage("/login"); // 로그인 페이지를 따로 만들지 않았기 때문에 스프링 시큐리티가 제공하는 로그인 페이지로 이동
+			login.loginPage("/loginForm"); // 로그인 페이지를 따로 만들지 않았기 때문에 스프링 시큐리티가 제공하는 로그인 페이지로 이동
 			// login.permitAll();
 			}
 		);
