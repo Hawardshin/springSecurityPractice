@@ -38,6 +38,12 @@ public class SecurityConfig {
 				.defaultSuccessUrl("/");
 			}
 		);
+		//oauth2 로그인
+		http.oauth2Login(oauth2 -> {
+			oauth2
+				.loginPage("/loginForm");
+		});
+
 
 		return http.build();
 	}
