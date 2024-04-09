@@ -1,6 +1,7 @@
 package filter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -8,6 +9,8 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class MyFilter1  implements Filter {
 	@Override
@@ -20,6 +23,7 @@ public class MyFilter1  implements Filter {
 		//PrintWriter out = servletResponse.getWriter();
 		//out.print("필터1");
 		//즉 프로세스를 끝내지 않고 계속 진행하려면 체인에 넘겨줘야만 합니다.
+
 	}
 
 }
