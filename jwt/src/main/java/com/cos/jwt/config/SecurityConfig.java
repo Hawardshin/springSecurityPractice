@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.filter.CorsFilter;
 
 import com.cos.jwt.config.jwt.JwtAuthenticationFilter;
+import com.cos.jwt.config.jwt.JwtAuthorizationFilter;
+import com.cos.jwt.repository.UserRepository;
 
 import filter.MyFilter3;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ public class SecurityConfig {
 	private final CorsFilter corsFilter;
 	//Spring Security 5.2 이상에서 AuthenticationManager를 가져오는 방법이 변경되었음
 	private final AuthenticationConfiguration authenticationConfiguration;
-
+	private final UserRepository userRepository;
 	//jwt 기본 설정
 	// MyFilter3 doFilter
 	// MyFilter2 doFilter
@@ -50,7 +52,8 @@ public class SecurityConfig {
 		http.addFilter(corsFilter); // @CrossOrigin(인증X), 시큐리티 필터에 등록 인증(O
 		http.formLogin(FormLoginConfigurer::disable); // form 로그인 비활성화
 		http.httpBasic(HttpBasicConfigurer::disable); // httpBasic 비활성화
-		http.addFilter(new JwtAuthenticationFilter(authenticationManager)); //jwt를 위한 필터를 추가
+		http.addFilter(new JwtAuthenticationFilter(authenticationManager))
+		.addFilter(new JwtAuthorizationFilter(authenticationManager,userRepository)); //jwt를 위한 필터를 추가
 		http.authorizeHttpRequests(authorize ->
 			authorize
 				.requestMatchers("/api/v1/user/**")
