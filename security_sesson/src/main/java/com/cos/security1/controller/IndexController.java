@@ -90,7 +90,6 @@ public class IndexController {
 		String rawPassword = user.getPassword();
 		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 		user.setPassword(encPassword);
-
 		userRepository.save(user);//회원가입 잘 됨 (비밀번호  1234로 들어가는데 이렇게 하면 시큐리티 로그인 불가. 해쉬암호화 해야함)
 		return "redirect:/loginForm";
 	}
