@@ -109,10 +109,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		//RSA방식이 아닌 Hash 암호방식
 		String jwtToken = JWT.create()
 			.withSubject("cos 토큰")
-			.withExpiresAt(new Date(System.currentTimeMillis() + (60000 * 10))) //1000이 1초 -> 10분임
+			.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) //1000이 1초 -> 10분임
 			.withClaim("id", principalDetails.getUser().getId())
 			.withClaim("username", principalDetails.getUser().getUsername())
-			.sign(Algorithm.HMAC512("cos"));
-		response.addHeader("Authorization", "Bearer " + jwtToken);
+			.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
 	}
 }
