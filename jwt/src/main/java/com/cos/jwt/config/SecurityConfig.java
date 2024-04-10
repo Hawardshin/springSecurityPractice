@@ -3,6 +3,7 @@ package com.cos.jwt.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -24,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final CorsFilter corsFilter;
+	//Spring Security 5.2 이상에서 AuthenticationManager를 가져오는 방법이 변경되었음
+	private final AuthenticationConfiguration authenticationConfiguration;
 
 	//jwt 기본 설정
 	// MyFilter3 doFilter
@@ -31,12 +34,15 @@ public class SecurityConfig {
 	// MyFilter1 doFilter
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.addFilterBefore(new MyFilter3(), BasicAuthenticationFilter.class); // 이렇게 필터를 추가하면 됩니다.
+		// http.addFilterBefore(new MyFilter3(), BasicAuthenticationFilter.class); // 이렇게 필터를 추가하면 됩니다.
 
 		// http.addFilter(new MyFilter1()); //이렇게 필터를 추가하면 오류가 납니다. (여기선 시큐리터 필터만 가능하기 때문에)
 		// http.addFilterBefore(new MyFilter1(), BasicAuthenticationFilter.class); // 이렇게 필터를 추가하면 됩니다.
 		//이것의 의미는 BasicAuthenticationFilter가 실행되기 전에 MyFilter1을 실행하겠다는 의미입니다.
-		AuthenticationManager authenticationManager =  http.getSharedObject(AuthenticationManager.class);
+		System.out.println("필터체인");
+		// AuthenticationManager authenticationManager =  http.getSharedObject(AuthenticationManager.class);
+		AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
+		System.out.println("매니저:::::" + authenticationManager);
 		http.csrf(CsrfConfigurer::disable); // csrf 토큰 비활성화 (테스트시 걸어두는게 좋음)
 		http.sessionManagement(sesson->{
 			sesson.sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션을 사용하지 않겠다.
